@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Event.associate = models => {
     Event.belongsTo(models.User, {
+      as: "user",
       foreignKey: "userId",
       onDelete: "CASCADE"
     });
@@ -37,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Event.associate = models => {
     Event.hasMany(models.EventSignUp, {
+      as: "event",
       foreignKey: "eventId",
       onDelete: "CASCADE"
     });

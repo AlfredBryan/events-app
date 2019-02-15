@@ -5,7 +5,6 @@ const cloudinaryStorage = require("multer-storage-cloudinary");
 const { check } = require("express-validator/check");
 
 const models = require("../models/index");
-const EventSignUp = require("../models/EventSignUp");
 
 const router = express.Router();
 
@@ -54,12 +53,67 @@ router.post(
   parser,
   (req, res) => {
     console.log(req.file);
-    models.Event.create({
-      name: req.body.name,
-      description: req.body.description,
-      image: req.file.url
-    }).then(handleResponse(res), handleError(res));
+    models.Event.create(
+      {
+        name: req.body.name,
+        description: req.body.description,
+        image: req.file.url
+      },
+      { include: models.EventSignUp }
+    ).then(handleResponse(res), handleError(res));
   }
 );
+
+router.post(
+  "/event/:id/signup",
+  [
+    check("phone")
+      .isLength({ min: 11 })
+      .trim()
+  ],
+  (req, res) => {
+    models.Event.findById(req.params.id, {
+      include: [{ model: models.EventSignUp }]
+    }).then;
+  }
+);
+
+router.post(
+  "/event/signup",
+  [
+    check("phone")
+      .isLength({ min: 11 })
+      .trim()
+  ],
+  (req, res) => {
+    models.EventSignUp.create(
+      {
+        name: req.body.name,
+        address: req.body.address,
+        phone: req.body.phone,
+        location: request.body.location,
+        reason: request.body.reason
+      },
+      { include: [Event] }
+    ).then(handleResponse(res), handleError(res));
+  }
+);
+
+router.post("event/:id", (req, res) => {
+  models.Event.findOne({ where: { id: req.params.id } }).then(event => {
+    models.EventSignUp.create({
+      name: req.body.name,
+      address: req.body.address,
+      phone: req.body.phone,
+      location: request.body.location,
+      reason: request.body.reason
+    }).then(created => {
+      event.addEvent(created).then((err, res) => {
+        if (err) return res.send(err);
+        res.send(res);
+      });
+    });
+  });
+});
 
 module.exports = router;

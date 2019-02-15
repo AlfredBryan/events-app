@@ -9,7 +9,7 @@ module.exports = {
       Example:
       return queryInterface.createTable('users', { id: Sequelize.INTEGER });
     */
-    return queryInterface.createTable("EventSignUps", {
+    return queryInterface.createTable("Events", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -18,21 +18,14 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        required: true
       },
-      address: {
+      description: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      phone: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      location: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      reason: {
+      image: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -44,11 +37,10 @@ module.exports = {
         type: Sequelize.DATE,
         required: true
       },
-      eventId: {
+      userId: {
         type: Sequelize.UUID,
-        onDelete: "CASCADE",
         references: {
-          model: "Events",
+          model: "Users",
           key: "id"
         }
       }
@@ -63,6 +55,6 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-    return queryInterface.dropTable("EventSignUps");
+    return queryInterface.dropTable("Events");
   }
 };

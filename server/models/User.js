@@ -24,7 +24,16 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = models => {
+    User.hasMany(models.EventSignUp, {
+      as: "user",
+      foreignKey: "userId",
+      onDelete: "CASCADE"
+    });
+  };
+
+  User.associate = models => {
     User.hasMany(models.Event, {
+      as: "user",
       foreignKey: "userId",
       onDelete: "CASCADE"
     });
