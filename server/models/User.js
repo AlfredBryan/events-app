@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+const user = (sequelize, DataTypes) => {
   const User = sequelize.define("User", {
     id: {
       type: DataTypes.UUID,
@@ -23,21 +23,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  User.associate = models => {
-    User.hasMany(models.EventSignUp, {
-      as: "user",
-      foreignKey: "userId",
-      onDelete: "CASCADE"
-    });
-  };
-
-  User.associate = models => {
-    User.hasMany(models.Event, {
-      as: "user",
-      foreignKey: "userId",
-      onDelete: "CASCADE"
+  User.associate = function(models) {
+    User.belongsToMany(models.Event, {
+      through: {
+        unique: false,
+        model: models.UserEvent
+      },
+      foreignKey: "userId"
     });
   };
 
   return User;
 };
+
+module.exports = user;

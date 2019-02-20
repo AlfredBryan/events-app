@@ -9,7 +9,7 @@ module.exports = {
       Example:
       return queryInterface.createTable('users', { id: Sequelize.INTEGER });
     */
-    return queryInterface.createTable("EventSignUps", {
+    return queryInterface.createTable("UserEvents", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -69,6 +69,6 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-    return queryInterface.dropTable("EventSignUps");
+    return queryInterface.createTable("UserEvents");
   }
 };

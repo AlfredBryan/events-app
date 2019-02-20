@@ -52,67 +52,78 @@ router.post(
   ],
   parser,
   (req, res) => {
-    console.log(req.file);
-    models.Event.create(
-      {
-        name: req.body.name,
-        description: req.body.description,
+    let { name, description } = req.body;
+    let errors = [];
+
+    // Validate Fields
+    if (!name) {
+      errors.push({ text: "Please add a name" });
+    }
+    if (!description) {
+      errors.push({ text: "Please add a description" });
+    }
+
+    if (errors.length > 0) {
+      res.send(errors);
+    } else {
+      models.Event.create({
+        name,
+        description,
         image: req.file.url
-      },
-      { include: models.EventSignUp }
-    ).then(handleResponse(res), handleError(res));
+      }).then(handleResponse(res), handleError(res));
+    }
   }
 );
 
-router.post(
-  "/event/:id/signup",
-  [
-    check("phone")
-      .isLength({ min: 11 })
-      .trim()
-  ],
-  (req, res) => {
-    models.Event.findById(req.params.id, {
-      include: [{ model: models.EventSignUp }]
-    }).then;
-  }
-);
-
-router.post(
-  "/event/signup",
-  [
-    check("phone")
-      .isLength({ min: 11 })
-      .trim()
-  ],
-  (req, res) => {
-    models.EventSignUp.create(
-      {
+/*router.post("/events/:id", (req, res) => {
+  models.Event.findOne({ where: { id: req.params.id } }).then(event => {
+    event
+      .setUser({
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
-        location: request.body.location,
-        reason: request.body.reason
-      },
-      { include: [Event] }
-    ).then(handleResponse(res), handleError(res));
-  }
-);
-
-router.post("event/:id", (req, res) => {
-  models.Event.findOne({ where: { id: req.params.id } }).then(event => {
-    models.EventSignUp.create({
-      name: req.body.name,
-      address: req.body.address,
-      phone: req.body.phone,
-      location: request.body.location,
-      reason: request.body.reason
-    }).then(created => {
-      event.addEvent(created).then((err, res) => {
-        if (err) return res.send(err);
-        res.send(res);
+        location: req.body.location,
+        reason: req.body.reason
+      })
+      .then(suser => {
+        console.log(suser);
       });
+  });
+});*/
+
+router.post("/events/:id/:id", (req, res) => {
+  models.Event.findOne({ where: { id: req.params.id } }).then(event => {
+    models.User.findOne({ where: { id: req.params.id } }).then(user => {
+      user
+        .addEvent([event], {
+          through: {
+            name: req.body.name,
+            address: req.body.address,
+            phone: req.body.phone,
+            location: req.body.location,
+            reason: req.body.reason
+          }
+        })
+        .then((err, event) => {
+          if (err) res.status(500).send(err);
+          res.status(201).send(event);
+        });
     });
+  });
+});
+
+router.get("/getevents", (req, res) => {
+  models.UserEvent.findAll({
+    include: [
+      {
+        model: models.User,
+        required: true
+      },
+      {
+        model: models.Event,
+        required: true
+      }
+    ]
   });
 });
 

@@ -18,8 +18,7 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false,
-        required: true
+        allowNull: false
       },
       description: {
         type: Sequelize.STRING,
@@ -36,13 +35,6 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DATE,
         required: true
-      },
-      userId: {
-        type: Sequelize.UUID,
-        references: {
-          model: "Users",
-          key: "id"
-        }
       }
     });
   },
@@ -55,6 +47,6 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-    return queryInterface.dropTable("Events");
+    return queryInterface.createTable("Events");
   }
 };

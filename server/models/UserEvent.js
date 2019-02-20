@@ -1,6 +1,11 @@
-module.exports = (sequelize, DataTypes) => {
-  const EventSignUp = sequelize.define("EventSignUp", {
-    id: {
+const userEvent = (sequelize, DataTypes) => {
+  const UserEvent = sequelize.define("UserEvent", {
+    userId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
+    eventId: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
@@ -43,18 +48,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  EventSignUp.associate = models => {
-    EventSignUp.belongsTo(models.User, {
-      as: "usersigned",
+  UserEvent.associate = models => {
+    UserEvent.belongsTo(models.User, {
       foreignKey: "userId",
-      onDelete: "CASCADE"
+      sourceKey: models.User.id
     });
-    EventSignUp.belongsTo(models.Event, {
-      as: "signedup",
+    UserEvent.belongsTo(models.Event, {
       foreignKey: "eventId",
-      onDelete: "CASCADE"
+      sourceKey: models.Event.id
     });
   };
 
-  return EventSignUp;
+  return UserEvent;
 };
+
+module.exports = userEvent;
