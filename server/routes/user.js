@@ -39,52 +39,73 @@ router.post(
       .trim()
   ],
   (req, res) => {
+    // comfirm user typed the same password
+    if (req.body.password !== req.body.passwordConf) {
+      var err = new Error("Passwords do not match.");
+      err.status = 400;
+      res.send("passwords dont match");
+      return next(err);
+    }
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
-    models.User.create({
-      email: req.body.email,
-      password: hashPassword
-    }).then(handleResponse(res), handleError(res));
+
+    let { firstName, lastName, email } = req.body;
+    let errors = [];
+
+    // Validate Fields
+    if (!firstName) {
+      errors.push({ text: "Please enter first name" });
+    }
+    if (!lastName) {
+      errors.push({ text: "Please enter last name" });
+    }
+    if (!email) {
+      errors.push({ text: "Please enter email" });
+    }
+
+    if (errors.length > 0) {
+      res.send(errors);
+    } else {
+      models.User.create({
+        firstName,
+        lastName,
+        email,
+        password: hashPassword
+      }).then(handleResponse(res), handleError(res));
+    }
   }
 );
 
 // User login route
-router.post(
-  "/user/login",
-  [
-    check("email")
-      .isEmail()
-      .normalizeEmail(),
-    check("password")
-      .isLength({ min: 7, max: 20 })
-      .trim()
-  ],
-  (req, res) => {
-    models.User.findOne({ where: { email: req.body.email } })
-      .then(user => {
-        if (!user) {
-          return res.status(404).send("User Not Found");
-        }
-        const passwordIsValid = bcrypt.compareSync(
-          req.body.password,
-          user.password
-        );
-        if (!passwordIsValid) {
-          return res.status(401).send({
-            auth: false,
-            accessToken: null,
-            reason: "Invalid Password!"
-          });
-        }
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-          expiresIn: 86400 // expires in 24 hours
+router.post("/user/login", (req, res) => {
+  models.User.findOne({ where: { email: req.body.email } })
+    .then(user => {
+      if (!user) {
+        return res.status(404).send("User Not Found");
+      }
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+      if (!passwordIsValid) {
+        return res.status(401).send({
+          auth: false,
+          token: null,
+          reason: "Invalid Password!"
         });
-        res.status(200).send({ auth: true, accessToken: token });
-      })
-      .catch(error => {
-        res.status(500).send("Error :" + error);
+      }
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: 86400 // expires in 24 hours
       });
-  }
-);
+      res
+        .status(200)
+        .cookie("token", token)
+        .send({ auth: true, token: token })
+        
+    })
+    .catch(error => {
+      res.status(500).send("Error :" + error);
+    });
+});
 
 // Only let the user access the route if they are authenticated.
 function ensureAuthenticated(req, res, next) {

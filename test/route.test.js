@@ -11,6 +11,8 @@ describe("POST /api/user/register", () => {
       .request(server)
       .post("/api/user/register")
       .send({
+        firstName: "test",
+        lastName: "table",
         email: "test@gmail.com",
         password: "testsecret"
       })
@@ -23,18 +25,18 @@ describe("POST /api/user/register", () => {
 });
 
 describe("POST /api/user/login", () => {
-    it("should login to selected user", done => {
-      chai
-        .request(server)
-        .post("/api/user/login")
-        .send({
-          email: "test@gmail.com",
-          password: "testsecret"
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          done();
-        });
-    });
+  it("should login to selected user", done => {
+    chai
+      .request(server)
+      .post("/api/user/login")
+      .send({
+        email: "test@gmail.com",
+        password: "testsecret"
+      })
+      .end((err, res) => {
+        should.not.exist(err);
+        res.status.should.equal(200);
+        done();
+      });
   });
+});

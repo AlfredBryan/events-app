@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const passport = require("passport");
 
 const userRouter = require("./routes/user");
 const eventsRouter = require("./routes/event");
@@ -12,6 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger("dev"));
 app.use(cors());
+app.use(cookieParser());
 
 // Add routes
 app.use("/api", userRouter);
@@ -23,8 +26,9 @@ app.get("*", (req, res) => {
   });
 });
 
-app.use(function(err, req, res, next) {
-  res.status(400).send(err);
-});
+app.get("/api/getuser", passport.authenticate("jwt", {session:false}), (req,res) => {
+	res.send(req.user)
+})
+
 
 module.exports = app;
