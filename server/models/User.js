@@ -45,6 +45,9 @@ const user = (sequelize, DataTypes) => {
       },
       foreignKey: "userId"
     });
+    User.hasMany(models.Event, {
+      foreignKey: "userId"
+    });
   };
 
   return User;

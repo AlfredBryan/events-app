@@ -11,14 +11,14 @@ const router = express.Router();
 function handleResponse(res) {
   return function(data) {
     console.log(data);
-    res.send(data);
-  };
+    res.status(200).send(data); 
+ };
 }
 
 function handleError(res) {
   return function(error) {
     console.log(error);
-    res.send(error);
+    res.status(200).send(data);
   };
 }
 
@@ -93,13 +93,13 @@ router.post("/user/login", (req, res) => {
           reason: "Invalid Password!"
         });
       }
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({id: user.id }, process.env.JWT_SECRET, {
         expiresIn: 86400 // expires in 24 hours
       });
       res
         .status(200)
         .cookie("token", token)
-        .send({ auth: true, token: token })
+        .send({ auth: true, token: token, user: user })
         
     })
     .catch(error => {
@@ -107,13 +107,6 @@ router.post("/user/login", (req, res) => {
     });
 });
 
-// Only let the user access the route if they are authenticated.
-function ensureAuthenticated(req, res, next) {
-  if (!req.user) {
-    return res.status(401).render("unauthenticated");
-  }
 
-  next();
-}
 
 module.exports = router;

@@ -25,7 +25,11 @@ const event = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true
       }
-    }
+    },
+    userId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+    },
   });
 
   Event.associate = function(models) {
@@ -35,6 +39,9 @@ const event = (sequelize, DataTypes) => {
         model: models.UserEvent
       },
       foreignKey: "eventId"
+    });
+    Event.belongsTo(models.User, {
+      foreignKey: "userId"
     });
   };
 

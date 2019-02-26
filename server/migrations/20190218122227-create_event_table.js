@@ -28,6 +28,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      userId: {
+        type: Sequelize.UUID,
+        references: {
+          model: "Users",
+          key: "id"
+        }
+      },
       createdAt: {
         type: Sequelize.DATE,
         required: true

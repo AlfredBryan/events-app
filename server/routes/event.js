@@ -37,11 +37,6 @@ const storage = cloudinaryStorage({
 
 const parser = multer({ storage: storage }).single("image");
 
-// List All Events
-router.get("/events/all", (req, res) => {
-  models.Event.findAll({}).then(handleResponse(res), handleError(res));
-});
-
 // Create New Event
 router.post(
   "/events/add",
@@ -69,49 +64,37 @@ router.post(
       models.Event.create({
         name,
         description,
-        image: req.file.url
+        image: req.file.url,
+        userId: req.body.userId
       }).then(handleResponse(res), handleError(res));
     }
   }
 );
 
-/*router.post("/events/:id", (req, res) => {
-  models.Event.findOne({ where: { id: req.params.id } }).then(event => {
-    event
-      .setUser({
+// SignUp to Events
+router.post("/events/:eventId", async (req, res) => {
+  let userEvent = null;
+  try {
+    const event = await models.Event.findOne({
+      where: { id: req.params.eventId }
+    });
+    const user = await models.User.findOne({
+      where: { id: req.body.userId }
+    });
+    userEvent = await user.addEvent([event], {
+      through: {
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
         location: req.body.location,
         reason: req.body.reason
-      })
-      .then(suser => {
-        console.log(suser);
-      });
-  });
-});*/
-
-router.post("/events/:id/:id", (req, res) => {
-  models.Event.findOne({ where: { id: req.params.id } }).then(event => {
-    models.User.findOne({ where: { id: req.params.id } }).then(user => {
-      user
-        .addEvent([event], {
-          through: {
-            name: req.body.name,
-            address: req.body.address,
-            phone: req.body.phone,
-            location: req.body.location,
-            reason: req.body.reason
-          }
-        })
-        .then((err, event) => {
-          if (err) res.status(500).send(err);
-          res.status(201).send(event);
-        });
+      }
     });
-  });
+  } catch (error) {}
+  res.send(userEvent);
 });
 
+// List EventSignUps
 router.get("/getevents", (req, res) => {
   models.UserEvent.findAll({
     include: [
@@ -124,7 +107,46 @@ router.get("/getevents", (req, res) => {
         required: true
       }
     ]
-  });
+  }).then(handleResponse(res), handleError(res));
+});
+
+//List all Events with join table
+router.get("/events/all", (req, res) => {
+  models.Event.findAll({
+    include: [
+      {
+        model: models.User
+      }
+    ]
+  }).then(handleResponse(res), handleError(res));
+});
+
+//List Single Events with join table
+router.get("/events/:id", (req, res) => {
+  models.Event.findAll({
+    include: [
+      {
+        model: models.User,
+        required: true
+      }
+    ]
+  }).then(handleResponse(res), handleError(res));
+});
+
+// List single Event SignUp
+router.get("/getevent/:id", (req, res) => {
+  models.UserEvent.findOne({
+    where: { id: req.params.id },
+    include: [
+      {
+        model: models.User,
+        required: true
+      },
+      {
+        model: models.Event
+      }
+    ]
+  }).then(handleResponse(res), handleError(res));
 });
 
 module.exports = router;

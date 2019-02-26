@@ -1,14 +1,17 @@
 const userEvent = (sequelize, DataTypes) => {
   const UserEvent = sequelize.define("UserEvent", {
-    userId: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
+    userId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+    },
     eventId: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
