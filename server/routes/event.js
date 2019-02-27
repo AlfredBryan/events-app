@@ -72,11 +72,11 @@ router.post(
 );
 
 // SignUp to Events
-router.post("/events/:eventId", async (req, res) => {
+router.post("/events/:id", async (req, res) => {
   let userEvent = null;
   try {
     const event = await models.Event.findOne({
-      where: { id: req.params.eventId }
+      where: { id: req.params.id }
     });
     const user = await models.User.findOne({
       where: { id: req.body.userId }
@@ -91,7 +91,7 @@ router.post("/events/:eventId", async (req, res) => {
       }
     });
   } catch (error) {}
-  res.send(userEvent);
+  res.status(201).send(userEvent);
 });
 
 // List EventSignUps
@@ -111,7 +111,7 @@ router.get("/getevents", (req, res) => {
 });
 
 //List all Events with join table
-router.get("/events/all", (req, res) => {
+router.get("/events/tables", (req, res) => {
   models.Event.findAll({
     include: [
       {
@@ -121,9 +121,14 @@ router.get("/events/all", (req, res) => {
   }).then(handleResponse(res), handleError(res));
 });
 
+// List all Events
+router.get("/events/all", (req, res) => {
+  models.Event.findAll({}).then(handleResponse(res), handleError(res));
+});
+
 //List Single Events with join table
 router.get("/events/:id", (req, res) => {
-  models.Event.findAll({
+  models.Event.findOne({ where: {id: req.params.id},
     include: [
       {
         model: models.User,
