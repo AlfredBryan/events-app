@@ -1,10 +1,11 @@
 {
   "development": {
-    "username": "ChimerezeAlfred",
-    "password": null,
-    "database": "events-db",
-    "host": "127.0.0.1",
+    "username": "bvzdsxbodxqimb",
+    "password": "449ce30e13b9ee4b277e6e4a5728721df15d7d7c080a645f99e864a915da0f68",
+    "database": "da82fi1v5bcitq",
+    "host": "ec2-54-235-134-25.compute-1.amazonaws.com",
     "dialect": "postgres",
+    "ssl": true,
     "operatorsAliases": false
   },
   "test": {
@@ -16,11 +17,12 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "ChimerezeAlfred",
-    "password": null,
-    "database": "events-db",
-    "host": "127.0.0.1",
+    "username": "bvzdsxbodxqimb",
+    "password": "449ce30e13b9ee4b277e6e4a5728721df15d7d7c080a645f99e864a915da0f68",
+    "database": "da82fi1v5bcitq",
+    "host": "ec2-54-235-134-25.compute-1.amazonaws.com",
     "dialect": "postgres",
+    "ssl": true,
     "operatorsAliases": false
   }
 }
