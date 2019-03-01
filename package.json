@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon bin/www",
     "start": "node bin/www",
-    "heroku-postbuild": "npm install --production && npm install -g sequelize && sequelize db:migrate"
+    "heroku-postbuild": "sequelize db:migrate"
   },
   "keywords": [
     "sequelize",
