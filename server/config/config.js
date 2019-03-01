@@ -2,7 +2,8 @@ module.exports = {
   development: {
     databaseUrl: process.env.DATABASE_URL,
     dialect: "postgres",
-    freezeTableName: true
+    freezeTableName: true,
+    ssl: true
   },
   test: {
     databaseUrl: process.env.DATABASE_URL,
@@ -10,6 +11,7 @@ module.exports = {
   },
   production: {
     databaseUrl: process.env.DATABASE_URL,
-    dialect: "postgres"
+    dialect: "postgres",
+    ssl: true
   }
 };
