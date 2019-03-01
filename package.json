@@ -8,8 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon bin/www",
-    "start": "node bin/www",
-    "heroku-postbuild": "sequelize db:migrate"
+    "start": "node bin/www"
   },
   "keywords": [
     "sequelize",
