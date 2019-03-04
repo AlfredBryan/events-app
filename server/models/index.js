@@ -27,9 +27,6 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-sequelize.sync({ force: true }).then(() => {
-  console.log("Database & Table");
-});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

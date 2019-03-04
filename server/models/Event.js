@@ -45,6 +45,10 @@ const event = (sequelize, DataTypes) => {
     });
   };
 
+  sequelize.sync({ force: true }).then(() => {
+    console.log("Database & Table");
+  });
+
   return Event;
 };
 

@@ -7,11 +7,11 @@ const userEvent = (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: DataTypes.UUIDV4
     },
     eventId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: DataTypes.UUIDV4
     },
     name: {
       type: DataTypes.STRING,
@@ -61,6 +61,10 @@ const userEvent = (sequelize, DataTypes) => {
       sourceKey: models.Event.id
     });
   };
+
+  sequelize.sync({ force: true }).then(() => {
+    console.log("Database & Table");
+  });
 
   return UserEvent;
 };
