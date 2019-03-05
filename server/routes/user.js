@@ -11,8 +11,8 @@ const router = express.Router();
 function handleResponse(res) {
   return function(data) {
     console.log(data);
-    res.status(200).send(data); 
- };
+    res.status(200).send(data);
+  };
 }
 
 function handleError(res) {
@@ -55,11 +55,25 @@ router.post(
     if (errors.length > 0) {
       res.send(errors);
     } else {
-      models.User.create({
-        fullName,
-        email,
-        password: hashPassword
-      }).then(handleResponse(res), handleError(res));
+      models.User.create(
+        {
+          fullName,
+          email,
+          password: hashPassword
+        },
+        (err, user) => {
+          if (err) res.status(409).send({ message: err.message });
+
+          //create token
+          const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresIn: 86400 // expires in 24 hours
+          });
+          res
+            .status(200)
+            .cookie("token", token)
+            .send({ auth: true, token: token, user: user });
+        }
+      );
     }
   }
 );
@@ -82,20 +96,17 @@ router.post("/user/login", (req, res) => {
           reason: "Invalid Password!"
         });
       }
-      const token = jwt.sign({id: user.id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: 86400 // expires in 24 hours
       });
       res
         .status(200)
         .cookie("token", token)
-        .send({ auth: true, token: token, user: user })
-        
+        .send({ auth: true, token: token, user: user });
     })
     .catch(error => {
       res.status(500).send("Error :" + error);
     });
 });
-
-
 
 module.exports = router;

@@ -4,7 +4,8 @@
   "description": "An Api for creating events",
   "main": "server.js",
   "engines": {
-    "node": "8.11.3"
+    "node": "8.11.3",
+    "npm": "6.8.0"
   },
   "scripts": {
     "dev": "nodemon bin/www",
