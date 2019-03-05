@@ -55,25 +55,22 @@ router.post(
     if (errors.length > 0) {
       res.send(errors);
     } else {
-      models.User.create(
-        {
-          fullName,
-          email,
-          password: hashPassword
-        },
-        (err, user) => {
-          if (err) res.status(409).send({ message: err.message });
+      models.User.create({
+        fullName,
+        email,
+        password: hashPassword
+      }).then((err, user) => {
+        if (err) res.status(409).send({ message: err.message });
 
-          //create token
-          const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-            expiresIn: 86400 // expires in 24 hours
-          });
-          res
-            .status(200)
-            .cookie("token", token)
-            .send({ auth: true, token: token, user: user });
-        }
-      );
+        //create token
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: 86400 // expires in 24 hours
+        });
+        res
+          .status(200)
+          .cookie("token", token)
+          .send({ auth: true, token: token, user: user });
+      });
     }
   }
 );
