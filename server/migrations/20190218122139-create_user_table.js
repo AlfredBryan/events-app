@@ -16,11 +16,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: false
       },
-      firstName: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      lastName: {
+      fullName: {
         type: Sequelize.STRING,
         allowNull: false
       },

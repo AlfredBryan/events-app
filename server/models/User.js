@@ -5,14 +5,7 @@ const user = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
-    lastName: {
+    fullName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -35,6 +28,13 @@ const user = (sequelize, DataTypes) => {
         notEmpty: true
       }
     }
+  });
+
+  User.beforeCreate(function(user) {
+    user.fullName = user.fullName.toLowerCase();
+    user.email = user.email.toLowerCase();
+
+    return user;
   });
 
   User.associate = function(models) {

@@ -39,24 +39,14 @@ router.post(
       .trim()
   ],
   (req, res) => {
-    // comfirm user typed the same password
-    if (req.body.password !== req.body.passwordConf) {
-      var err = new Error("Passwords do not match.");
-      err.status = 400;
-      res.send("passwords dont match");
-      return next(err);
-    }
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
 
-    let { firstName, lastName, email } = req.body;
+    let { fullName, email } = req.body;
     let errors = [];
 
     // Validate Fields
-    if (!firstName) {
-      errors.push({ text: "Please enter first name" });
-    }
-    if (!lastName) {
-      errors.push({ text: "Please enter last name" });
+    if (!fullName) {
+      errors.push({ text: "Please enter fullname" });
     }
     if (!email) {
       errors.push({ text: "Please enter email" });
@@ -66,8 +56,7 @@ router.post(
       res.send(errors);
     } else {
       models.User.create({
-        firstName,
-        lastName,
+        fullName,
         email,
         password: hashPassword
       }).then(handleResponse(res), handleError(res));
