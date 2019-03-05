@@ -59,10 +59,7 @@ router.post(
         fullName,
         email,
         password: hashPassword
-      }).then((err, user) => {
-        if (err) res.status(409).send({ message: err.message });
-
-        //create token
+      }).then(user => {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
           expiresIn: 86400 // expires in 24 hours
         });
